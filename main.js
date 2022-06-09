@@ -41,4 +41,18 @@ let miniMap = new L.Control.MiniMap(
 ).addTo(map);
 
 // TODO: hier aus CSV konvertierte JSON Datei laden und anzeigen
+async function loadDrillData(url){
+    let response = await fetch(url);
+    let data = await response.json();
+    let overlay = L.markerClusterGroup(); 
+    overlay.addTo(map); 
+    layerControl.addOverlay(overlay, "Bohrungen Graz")
+    for (let drill of data){
+        let marker = L.marker([drill.PHI, drill.LAMBDA]); 
+        marker.bindPopup(`<h3>${drill.ADRESSE}</h3>
+        ${drill.AUFNDATUM}: ${drill.TIEFE_M} m`)
+        overlay.addLayer(marker); 
+    }
+}
+loadDrillData("data/csvjson.json"); 
 
